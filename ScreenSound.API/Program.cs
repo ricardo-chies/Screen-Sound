@@ -3,17 +3,19 @@ using ScreenSound.Data;
 using ScreenSound.Models;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddDbContext<Context>();
+builder.Services.AddTransient<ScreenSoundDAL<Artista>>();
+
 var app = builder.Build();
 
-app.MapGet("/Artistas", () =>
+app.MapGet("/Artistas", ([FromServices] ScreenSoundDAL<Artista> dal) =>
 {
-    var dal = new ScreenSoundDAL<Artista>(new Context());
     return Results.Ok(dal.Listar());
 });
 
-app.MapGet("/Artistas/{nome}", (string nome) =>
+app.MapGet("/Artistas/{nome}", ([FromServices] ScreenSoundDAL<Artista> dal, string nome) =>
 {
-    var dal = new ScreenSoundDAL<Artista>(new Context());
     var artista = dal.RecuperarPor(artista => artista.Nome.ToUpper().Equals(nome.ToUpper()));
 
     if (artista is null)
@@ -24,9 +26,8 @@ app.MapGet("/Artistas/{nome}", (string nome) =>
     return Results.Ok(artista);
 });
 
-app.MapPost("/Artistas", ([FromBody]Artista artista) =>
+app.MapPost("/Artistas", ([FromServices] ScreenSoundDAL<Artista> dal, [FromBody]Artista artista) =>
 {
-    var dal = new ScreenSoundDAL<Artista>(new Context());
     dal.Adicionar(artista);
     return Results.Ok();
 });
