@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Mvc;
 using ScreenSound.Data;
 using ScreenSound.Models;
 
@@ -21,6 +22,13 @@ app.MapGet("/Artistas/{nome}", (string nome) =>
     }
 
     return Results.Ok(artista);
+});
+
+app.MapPost("/Artistas", ([FromBody]Artista artista) =>
+{
+    var dal = new ScreenSoundDAL<Artista>(new Context());
+    dal.Adicionar(artista);
+    return Results.Ok();
 });
 
 app.Run();
