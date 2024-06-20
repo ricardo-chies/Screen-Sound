@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ScreenSound.API.Requests;
+using ScreenSound.API.Responses;
 using ScreenSound.Data;
 using ScreenSound.Models;
 
@@ -11,7 +12,15 @@ namespace ScreenSound.API.Endpoints
         {
             app.MapGet("/Musicas", ([FromServices] ScreenSoundDAL<Musica> dal) =>
             {
-                return Results.Ok(dal.Listar());
+                var listMusica = dal.Listar();
+
+                if (listMusica is null)
+                {
+                    return Results.NotFound();
+                }
+
+                var listMusicaResponse = EntityListToResponseList(listMusica);
+                return Results.Ok(listMusicaResponse);
             });
 
             app.MapGet("/Musicas/{nome}", ([FromServices] ScreenSoundDAL<Musica> dal, string nome) =>
@@ -23,13 +32,12 @@ namespace ScreenSound.API.Endpoints
                     return Results.NotFound();
                 }
 
-                return Results.Ok(musica);
-
+                return Results.Ok(EntityToResponse(musica));
             });
 
             app.MapPost("/Musicas", ([FromServices] ScreenSoundDAL<Musica> dal, [FromBody] MusicaRequest musicaRequest) =>
             {
-                var musica = new Musica(musicaRequest.nome, musicaRequest.ArtistaId, musicaRequest.anoLancamento);
+                var musica = new Musica(musicaRequest.nome);
                 dal.Adicionar(musica);
                 return Results.Ok();
             });
@@ -61,7 +69,17 @@ namespace ScreenSound.API.Endpoints
                 dal.Atualizar(musica);
                 return Results.Ok();
             });
-
         }
+
+        private static ICollection<MusicaResponse> EntityListToResponseList(IEnumerable<Musica> musicaList)
+        {
+            return musicaList.Select(a => EntityToResponse(a)).ToList();
+        }
+
+        private static MusicaResponse EntityToResponse(Musica musica)
+        {
+            return new MusicaResponse(musica.Id, musica.Nome!, musica.Artista?.Id, musica.Artista?.Nome);
+        }
+
     }
 }
