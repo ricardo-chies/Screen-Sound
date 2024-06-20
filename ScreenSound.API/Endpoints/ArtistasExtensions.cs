@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using ScreenSound.API.Requests;
 using ScreenSound.Data;
 using ScreenSound.Models;
 
@@ -25,8 +26,9 @@ namespace ScreenSound.API.Endpoints
                 return Results.Ok(artista);
             });
 
-            app.MapPost("/Artistas", ([FromServices] ScreenSoundDAL<Artista> dal, [FromBody] Artista artista) =>
+            app.MapPost("/Artistas", ([FromServices] ScreenSoundDAL<Artista> dal, [FromBody] ArtistaRequest artistaRequest) =>
             {
+                var artista = new Artista(artistaRequest.nome, artistaRequest.bio);
                 dal.Adicionar(artista);
                 return Results.Ok();
             });
@@ -44,19 +46,15 @@ namespace ScreenSound.API.Endpoints
                 return Results.NoContent();
             });
 
-            app.MapPut("/Artistas", ([FromServices] ScreenSoundDAL<Artista> dal, [FromBody] Artista artistaAtualizado) =>
-            {
-                var artista = dal.RecuperarPor(artista => artista.Id == artistaAtualizado.Id);
+            app.MapPut("/Artistas", ([FromServices] ScreenSoundDAL<Artista> dal, [FromBody] ArtistaRequestEdit artistaRequestEdit) => {
 
+                var artista = dal.RecuperarPor(a => a.Id == artistaRequestEdit.Id);
                 if (artista is null)
                 {
-                    Results.NotFound();
+                    return Results.NotFound();
                 }
-
-                artista.Nome = artistaAtualizado.Nome;
-                artista.Bio = artistaAtualizado.Bio;
-                artista.FotoPerfil = artistaAtualizado.FotoPerfil;
-
+                artista.Nome = artistaRequestEdit.nome;
+                artista.Bio = artistaRequestEdit.bio;
                 dal.Atualizar(artista);
                 return Results.Ok();
             });
