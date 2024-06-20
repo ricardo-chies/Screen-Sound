@@ -1,7 +1,7 @@
 ﻿namespace ScreenSound.Data;
-internal class ScreenSoundDAL<T> where T : class
+public class ScreenSoundDAL<T> where T : class
 {
-    protected readonly Context context;
+    private readonly Context context;
 
     public ScreenSoundDAL(Context context)
     {

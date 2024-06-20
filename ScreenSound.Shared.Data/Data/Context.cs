@@ -3,7 +3,7 @@ using ScreenSound.Models;
 
 namespace ScreenSound.Data
 {
-    internal class Context : DbContext
+    public class Context : DbContext
     {
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
