@@ -14,5 +14,13 @@ namespace ScreenSound.Data
         public DbSet<Artista> Artistas { get; set; }
         public DbSet<Musica> Musicas { get; set; }
         public DbSet<Genero> Generos { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            // Mapeando relacionamento de n para n
+            modelBuilder.Entity<Musica>()
+                .HasMany(c => c.Generos)
+                .WithMany(c => c.Musicas);
+        }
     }
 }
