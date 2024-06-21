@@ -35,18 +35,21 @@ namespace ScreenSound.API.Endpoints
                 return Results.Ok(EntityToResponse(musica));
             });
 
-            app.MapPost("/Musicas", ([FromServices] ScreenSoundDAL<Musica> dal, [FromBody] MusicaRequest musicaRequest) =>
+            app.MapPost("/Musicas", ([FromServices] ScreenSoundDAL<Musica> dalMusica, [FromServices] ScreenSoundDAL<Genero> dalGenero,
+                [FromBody] MusicaRequest musicaRequest) =>
             {
-                var musica = new Musica(musicaRequest.Nome) 
-                { 
+                var musica = new Musica(musicaRequest.Nome)
+                {
+                    ArtistaId = musicaRequest.ArtistaId,
                     AnoLancamento = musicaRequest.AnoLancamento,
                     Generos = musicaRequest.Generos is not null ?
-                    GeneroReuqestConverter(musicaRequest.Generos) : []
+                        GeneroRequestConverter(musicaRequest.Generos, dalGenero) : new List<Genero>()
                 };
 
-                dal.Adicionar(musica);
+                dalMusica.Adicionar(musica);
                 return Results.Ok();
             });
+
 
             app.MapDelete("/Musicas/{id}", ([FromServices] ScreenSoundDAL<Musica> dal, int id) => {
                 var musica = dal.RecuperarPor(a => a.Id == id);
@@ -77,9 +80,24 @@ namespace ScreenSound.API.Endpoints
             });
         }
 
-        private static ICollection<Genero> GeneroReuqestConverter(ICollection<GeneroRequest> generos)
+        private static ICollection<Genero> GeneroRequestConverter(ICollection<GeneroRequest> generos, ScreenSoundDAL<Genero> dalGenero)
         {
-            return generos.Select(g => RequestToEntity(g)).ToList();
+            var listGeneros = new List<Genero>();
+            foreach (var i in generos)
+            {
+                var entity = RequestToEntity(i);
+                var genero = dalGenero.RecuperarPor(g => g.Nome.ToUpper().Equals(i.Nome.ToUpper()));
+
+                if(genero is not null)
+                {
+                    listGeneros.Add(genero);
+                }
+                else
+                {
+                    listGeneros.Add(entity);
+                }
+            }
+            return listGeneros;
         }
 
         private static Genero RequestToEntity(GeneroRequest genero)

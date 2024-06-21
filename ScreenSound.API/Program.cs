@@ -8,6 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<Context>();
 builder.Services.AddTransient<ScreenSoundDAL<Artista>>();
 builder.Services.AddTransient<ScreenSoundDAL<Musica>>();
+builder.Services.AddTransient<ScreenSoundDAL<Genero>>();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen( c =>
@@ -30,6 +31,7 @@ var app = builder.Build();
 
 app.AddEnpointsArtistas();
 app.AddEndpointsMusicas();
+app.AddEndpointsGeneros();
 
 app.UseSwagger();
 app.UseSwaggerUI();
