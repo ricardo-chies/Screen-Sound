@@ -21,6 +21,12 @@ namespace ScreenSound.Data
             modelBuilder.Entity<Musica>()
                 .HasMany(c => c.Generos)
                 .WithMany(c => c.Musicas);
+
+            // Mapeando relacionamento de 1 para n
+            modelBuilder.Entity<Musica>()
+                .HasOne(m => m.Artista)
+                .WithMany(a => a.Musicas)
+                .HasForeignKey(m => m.ArtistaId);
         }
     }
 }
