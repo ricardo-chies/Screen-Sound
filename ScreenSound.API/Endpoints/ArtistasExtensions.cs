@@ -8,7 +8,7 @@ namespace ScreenSound.API.Endpoints
 {
     public static class ArtistasExtensions
     {
-        public static void AddEnpointsArtistas(this WebApplication app)
+        public static void AddEndpointsArtistas(this WebApplication app)
         {
             app.MapGet("/Artistas", ([FromServices] ScreenSoundDAL<Artista> dal) =>
             {

@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using ScreenSound.API.Endpoints;
 using ScreenSound.Data;
@@ -5,7 +6,12 @@ using ScreenSound.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddDbContext<Context>();
+builder.Services.AddDbContext<Context>((options) =>
+{
+    options.UseMySql(builder.Configuration["ConnectionStrings:ScreenSoundDB"],
+                new MySqlServerVersion(new Version(7, 0, 0)));
+});
+
 builder.Services.AddTransient<ScreenSoundDAL<Artista>>();
 builder.Services.AddTransient<ScreenSoundDAL<Musica>>();
 builder.Services.AddTransient<ScreenSoundDAL<Genero>>();
@@ -29,7 +35,7 @@ builder.Services.AddSwaggerGen( c =>
 
 var app = builder.Build();
 
-app.AddEnpointsArtistas();
+app.AddEndpointsArtistas();
 app.AddEndpointsMusicas();
 app.AddEndpointsGeneros();
 
