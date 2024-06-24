@@ -1,20 +1,17 @@
 ﻿using ScreenSound.Web.Responses;
 using System.Net.Http.Json;
 
-namespace ScreenSound.Web.Services
+namespace ScreenSound.Web.Services;
+
+public class ArtistaAPI
 {
-    public class ArtistaAPI
+    private readonly HttpClient _httpClient;
+    public ArtistaAPI(IHttpClientFactory factory)
     {
-        private readonly HttpClient _httpClient;
-
-        public ArtistaAPI(IHttpClientFactory factory)
-        {
-            _httpClient = factory.CreateClient("API");
-        } 
-
-        public async Task<ICollection<ArtistaResponse>?> GetArtistasAsync()
-        {
-            return await _httpClient.GetFromJsonAsync<ICollection<ArtistaResponse>>("artistas");
-        }
+        _httpClient = factory.CreateClient("API");
+    }
+    public async Task<ICollection<ArtistaResponse>?> GetArtistasAsync()
+    {
+        return await _httpClient.GetFromJsonAsync<ICollection<ArtistaResponse>>("artistas");
     }
 }

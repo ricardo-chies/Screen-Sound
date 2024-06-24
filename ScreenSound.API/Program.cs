@@ -6,6 +6,15 @@ using ScreenSound.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Configurando serviço CORS
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowSpecificOrigin",
+        builder => builder.WithOrigins("https://localhost:7073")
+                          .AllowAnyHeader()
+                          .AllowAnyMethod());
+});
+
 builder.Services.AddDbContext<Context>((options) =>
 {
     options.UseMySql(builder.Configuration["ConnectionStrings:ScreenSoundDB"],
@@ -17,7 +26,7 @@ builder.Services.AddTransient<ScreenSoundDAL<Musica>>();
 builder.Services.AddTransient<ScreenSoundDAL<Genero>>();
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen( c =>
+builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo
     {
@@ -35,11 +44,16 @@ builder.Services.AddSwaggerGen( c =>
 
 var app = builder.Build();
 
-app.AddEndpointsArtistas();
-app.AddEndpointsMusicas();
-app.AddEndpointsGeneros();
+app.UseHttpsRedirection();
+
+// Configure o middleware CORS
+app.UseCors("AllowSpecificOrigin");
 
 app.UseSwagger();
 app.UseSwaggerUI();
+
+app.AddEndpointsArtistas();
+app.AddEndpointsMusicas();
+app.AddEndpointsGeneros();
 
 app.Run();

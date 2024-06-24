@@ -8,9 +8,9 @@ builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 
 builder.Services.AddTransient<ArtistaAPI>();
-builder.Services.AddHttpClient("API", client =>
-{
-    client.BaseAddress = new Uri(builder.Configuration["APIServer:Uri"]!);
+
+builder.Services.AddHttpClient("API", client => {
+    client.BaseAddress = new Uri(builder.Configuration["APIServer:Url"]!);
     client.DefaultRequestHeaders.Add("Accept", "application/json");
 });
 
