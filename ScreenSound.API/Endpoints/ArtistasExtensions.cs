@@ -51,7 +51,7 @@ namespace ScreenSound.API.Endpoints
                     Results.NotFound();
                 }
 
-                dal.Deletar(artista);
+                dal.DeletarArtista(artista);
                 return Results.NoContent();
             });
 

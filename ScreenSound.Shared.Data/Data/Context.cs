@@ -32,11 +32,12 @@ namespace ScreenSound.Data
                 .HasMany(c => c.Generos)
                 .WithMany(c => c.Musicas);
 
-            // Mapeando relacionamento de 1 para n
+            // Mapeando relacionamento de 1 para n com cascade delete
             modelBuilder.Entity<Musica>()
                 .HasOne(m => m.Artista)
                 .WithMany(a => a.Musicas)
-                .HasForeignKey(m => m.ArtistaId);
+                .HasForeignKey(m => m.ArtistaId)
+                .OnDelete(DeleteBehavior.Cascade); // Cascade delete
         }
     }
 }

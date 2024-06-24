@@ -1,4 +1,7 @@
-﻿namespace ScreenSound.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using ScreenSound.Models;
+
+namespace ScreenSound.Data;
 public class ScreenSoundDAL<T> where T : class
 {
     private readonly Context context;
@@ -37,4 +40,24 @@ public class ScreenSoundDAL<T> where T : class
     {
         return context.Set<T>().Where(condicao);
     }
+
+    public void DeletarArtista(Artista artista)
+    {
+        // Inclui as músicas relacionadas ao artista
+        var artistaEntity = context.Set<Artista>()
+            .Include(a => a.Musicas)
+            .FirstOrDefault(a => a.Id == artista.Id);
+
+        if (artistaEntity != null)
+        {
+            // Remove todas as músicas relacionadas ao artista
+            context.Set<Musica>().RemoveRange(artistaEntity.Musicas);
+
+            // Remove o próprio artista
+            context.Set<Artista>().Remove(artistaEntity);
+
+            context.SaveChanges();
+        }
+    }
+
 }
