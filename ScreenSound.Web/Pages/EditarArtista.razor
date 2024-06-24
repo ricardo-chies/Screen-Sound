@@ -22,6 +22,13 @@
 
         <div class="d-flex align-center justify-space-between mt-4">
             <MudButton Variant="Variant.Filled"
+                       Color="Color.Primary"
+                       Class="ml-auto"
+                       @onclick="Editar">
+                Salvar
+            </MudButton>
+
+            <MudButton Variant="Variant.Filled"
                        @onclick="Deletar"
                        Color="Color.Secondary"
                        Class="ml-auto">
@@ -50,6 +57,13 @@
     private async Task Deletar()
     {
         await artistaAPI.DeleteArtistaAsync(Artista!.Id);
+        navigationManager.NavigateTo("/Artistas");
+    }
+
+    private async Task Editar()
+    {
+        var requestEdit = new ArtistaRequestEdit(Artista!.Id, nome!, biografia!);
+        await artistaAPI.UpdateArtistaAsync(requestEdit);
         navigationManager.NavigateTo("/Artistas");
     }
 
