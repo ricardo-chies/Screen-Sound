@@ -12,7 +12,7 @@ namespace ScreenSound.API.Endpoints
         {
             app.MapGet("/Musicas", ([FromServices] ScreenSoundDAL<Musica> dal) =>
             {
-                var listMusica = dal.Listar();
+                var listMusica = dal.ListarMusicasComArtistas();
 
                 if (listMusica is null)
                 {
@@ -25,7 +25,7 @@ namespace ScreenSound.API.Endpoints
 
             app.MapGet("/Musicas/{nome}", ([FromServices] ScreenSoundDAL<Musica> dal, string nome) =>
             {
-                var musica = dal.RecuperarPor(a => a.Nome.ToUpper().Equals(nome.ToUpper()));
+                var musica = dal.RecuperarMusicaComArtistaPor(a => a.Nome.ToUpper().Equals(nome.ToUpper()));
 
                 if (musica is null)
                 {

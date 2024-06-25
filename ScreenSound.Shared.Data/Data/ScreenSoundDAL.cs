@@ -60,4 +60,17 @@ public class ScreenSoundDAL<T> where T : class
         }
     }
 
+    public IEnumerable<Musica> ListarMusicasComArtistas()
+    {
+        return context.Set<Musica>()
+            .Include(m => m.Artista)
+            .ToList();
+    }
+
+    public Musica? RecuperarMusicaComArtistaPor(Func<Musica, bool> condicao)
+    {
+        return context.Set<Musica>()
+            .Include(m => m.Artista)
+            .FirstOrDefault(condicao);
+    }
 }
