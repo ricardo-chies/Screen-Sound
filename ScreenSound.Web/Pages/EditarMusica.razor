@@ -1,5 +1,5 @@
 ﻿@page "/EditarMusica/{NomeMusica}"
-@inject ArtistaAPI artistasAPI
+@inject ArtistaAPI artistaAPI
 @inject GeneroAPI generoAPI
 @inject MusicasAPI musicaAPI
 @inject NavigationManager navigationManager
@@ -16,7 +16,8 @@
                       Required="true"
                       RequiredError="Campo obrigatório." />
 
-        <MudSelect Class="mt-4" T="ArtistaResponse" Label="Artistas" Variant="Variant.Outlined" ValueChanged="ArtistaSelecionado" AnchorOrigin="Origin.BottomCenter">
+        <MudSelect Class="mt-4" T="ArtistaResponse" Label="Artistas"
+                   Variant="Variant.Filled" ValueChanged="ArtistaSelecionado" AnchorOrigin="Origin.BottomCenter">
             @if (artistas is not null)
             {
                 @foreach (var artista in artistas)
@@ -33,19 +34,23 @@
                          Required="true"
                          RequiredError="Campo obrigatório." />
 
-        <MudSelect Class="mt-4" T="GeneroResponse" Label="Gêneros" Variant="Variant.Outlined" ValueChanged="GeneroSelecionado" AnchorOrigin="Origin.BottomCenter">
+        <MudSelect Class="mt-4" T="GeneroResponse" Label="Gêneros"
+                   Variant="Variant.Filled" ValueChanged="GeneroSelecionado" AnchorOrigin="Origin.BottomCenter">
             @if (generos is not null)
             {
-                @foreach (var generos in generos)
+                @foreach (var genero in generos)
                 {
-                    <MudSelectItem Value="generos" />
+                    <MudSelectItem Value="genero" />
                 }
             }
             @if (GenerosSelecionados is not null)
             {
                 foreach (var genero in GenerosSelecionados)
                 {
-                    <MudAlert Severity="Severity.Info">@(genero.Nome) adicionado como gênero da música.</MudAlert>
+                    <MudAlert Severity="Severity.Info">
+                        @(genero.Nome) adicionado
+                        como gênero da música.
+                    </MudAlert>
                 }
             }
         </MudSelect>
@@ -53,6 +58,13 @@
         <div class="d-flex align-center justify-space-between mt-4">
             <MudButton Variant="Variant.Filled"
                        Color="Color.Primary"
+                       Class="ml-auto"
+                       @onclick="Editar">
+                Salvar
+            </MudButton>
+
+            <MudButton Variant="Variant.Filled"
+                       Color="Color.Secondary"
                        @onclick="Deletar"
                        Class="ml-auto">
                 Deletar
@@ -69,7 +81,7 @@
 </MudPaper>
 
 @code {
-    private int? anoLancamento;
+    private int anoLancamento;
     private string? nome;
 
     private ICollection<ArtistaResponse>? artistas;
@@ -80,11 +92,15 @@
 
     public MusicaResponse? Musica { get; set; }
 
+    private List<GeneroRequest> GenerosRequest { get; set; } = new();
+
     [Parameter]
     public string? NomeMusica { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
+        artistas = await artistaAPI.GetArtistasAsync();
+        generos = await generoAPI.GetGenerosAsync();
         Musica = await musicaAPI.GetMusicaPorNomeAsync(NomeMusica!);
         anoLancamento = Musica!.AnoLancamento;
         nome = Musica!.Nome;
@@ -112,5 +128,20 @@
         await musicaAPI.DeleteMusicaAsync(Musica!.Id);
         navigationManager.NavigateTo("/MusicasPorArtista");
 
+    }
+
+    public async Task Editar()
+    {
+        if (GenerosSelecionados is not null)
+        {
+            foreach (var genero in GenerosSelecionados)
+            {
+                GenerosRequest.Add(new GeneroRequest(genero.Nome, genero.Descricao));
+            }
+        }
+
+        var musicaRequest = new MusicaRequest(nome!, ArtistaDaMusica!.Id, anoLancamento, GenerosRequest);
+        await musicaAPI.AddMusicaAsync(musicaRequest);
+        navigationManager.NavigateTo("/MusicasPorArtista");
     }
 }
