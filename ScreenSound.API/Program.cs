@@ -1,8 +1,10 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 using ScreenSound.API.Endpoints;
 using ScreenSound.Data;
 using ScreenSound.Models;
+using ScreenSound.Shared.Data.Models;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -21,6 +23,8 @@ builder.Services.AddDbContext<Context>((options) =>
     options.UseMySql(builder.Configuration["ConnectionStrings:ScreenSoundDB"],
                 new MySqlServerVersion(new Version(7, 0, 0)));
 });
+
+builder.Services.AddIdentityApiEndpoints<PessoaAcesso>().AddEntityFrameworkStores<Context>();
 
 builder.Services.AddTransient<ScreenSoundDAL<Artista>>();
 builder.Services.AddTransient<ScreenSoundDAL<Musica>>();
@@ -59,5 +63,7 @@ app.UseSwaggerUI();
 app.AddEndpointsArtistas();
 app.AddEndpointsMusicas();
 app.AddEndpointsGeneros();
+
+app.MapGroup("auth").MapIdentityApi<PessoaAcesso>().WithTags("Autorização");
 
 app.Run();
