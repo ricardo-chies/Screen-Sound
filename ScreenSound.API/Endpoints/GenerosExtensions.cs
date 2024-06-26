@@ -8,21 +8,24 @@ namespace ScreenSound.API.Endpoints
 {
     public static class GeneroExtensions
     {
-
         public static void AddEndpointsGeneros(this WebApplication app)
         {
-            app.MapPost("/Generos", ([FromServices] ScreenSoundDAL<Genero> dal, [FromBody] GeneroRequest generoReq) =>
+            var groupBuilder = app.MapGroup("genero")
+                .RequireAuthorization()
+                .WithTags("Gêneros");
+
+            groupBuilder.MapPost("", ([FromServices] ScreenSoundDAL<Genero> dal, [FromBody] GeneroRequest generoReq) =>
             {
                 dal.Adicionar(RequestToEntity(generoReq));
             });
 
 
-            app.MapGet("/Generos", ([FromServices] ScreenSoundDAL<Genero> dal) =>
+            groupBuilder.MapGet("", ([FromServices] ScreenSoundDAL<Genero> dal) =>
             {
                 return EntityListToResponseList(dal.Listar());
             });
 
-            app.MapGet("/Generos/{nome}", ([FromServices] ScreenSoundDAL<Genero> dal, string nome) =>
+            groupBuilder.MapGet("{nome}", ([FromServices] ScreenSoundDAL<Genero> dal, string nome) =>
             {
                 var genero = dal.RecuperarPor(a => a.Nome.ToUpper().Equals(nome.ToUpper()));
                 if (genero is not null)
@@ -33,7 +36,7 @@ namespace ScreenSound.API.Endpoints
                 return Results.NotFound("Gênero não encontrado.");
             });
 
-            app.MapDelete("/Generos/{id}", ([FromServices] ScreenSoundDAL<Genero> dal, int id) =>
+            groupBuilder.MapDelete("{id}", ([FromServices] ScreenSoundDAL<Genero> dal, int id) =>
             {
                 var genero = dal.RecuperarPor(a => a.Id == id);
                 if (genero is null)

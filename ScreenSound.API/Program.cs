@@ -1,5 +1,4 @@
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 using ScreenSound.API.Endpoints;
 using ScreenSound.Data;
@@ -25,6 +24,7 @@ builder.Services.AddDbContext<Context>((options) =>
 });
 
 builder.Services.AddIdentityApiEndpoints<PessoaAcesso>().AddEntityFrameworkStores<Context>();
+builder.Services.AddAuthorization();
 
 builder.Services.AddTransient<ScreenSoundDAL<Artista>>();
 builder.Services.AddTransient<ScreenSoundDAL<Musica>>();
@@ -56,6 +56,7 @@ app.UseHttpsRedirection();
 app.UseCors("AllowSpecificOrigin");
 
 app.UseStaticFiles();
+app.UseAuthorization();
 
 app.UseSwagger();
 app.UseSwaggerUI();

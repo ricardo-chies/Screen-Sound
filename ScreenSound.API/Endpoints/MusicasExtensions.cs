@@ -10,7 +10,11 @@ namespace ScreenSound.API.Endpoints
     {
         public static void AddEndpointsMusicas(this WebApplication app)
         {
-            app.MapGet("/Musicas", ([FromServices] ScreenSoundDAL<Musica> dal) =>
+            var groupBuilder = app.MapGroup("musicas")
+                .RequireAuthorization()
+                .WithTags("Musicas");
+
+            groupBuilder.MapGet("", ([FromServices] ScreenSoundDAL<Musica> dal) =>
             {
                 var listMusica = dal.ListarMusicasComArtistas();
 
@@ -23,7 +27,7 @@ namespace ScreenSound.API.Endpoints
                 return Results.Ok(listMusicaResponse);
             });
 
-            app.MapGet("/Musicas/{nome}", ([FromServices] ScreenSoundDAL<Musica> dal, string nome) =>
+            groupBuilder.MapGet("{nome}", ([FromServices] ScreenSoundDAL<Musica> dal, string nome) =>
             {
                 var musica = dal.RecuperarMusicaComArtistaPor(a => a.Nome.ToUpper().Equals(nome.ToUpper()));
 
@@ -35,7 +39,7 @@ namespace ScreenSound.API.Endpoints
                 return Results.Ok(EntityToResponse(musica));
             });
 
-            app.MapPost("/Musicas", ([FromServices] ScreenSoundDAL<Musica> dalMusica, [FromServices] ScreenSoundDAL<Genero> dalGenero,
+            groupBuilder.MapPost("", ([FromServices] ScreenSoundDAL<Musica> dalMusica, [FromServices] ScreenSoundDAL<Genero> dalGenero,
                 [FromBody] MusicaRequest musicaRequest) =>
             {
                 var musica = new Musica(musicaRequest.Nome)
@@ -51,7 +55,7 @@ namespace ScreenSound.API.Endpoints
             });
 
 
-            app.MapDelete("/Musicas/{id}", ([FromServices] ScreenSoundDAL<Musica> dal, int id) => {
+            groupBuilder.MapDelete("{id}", ([FromServices] ScreenSoundDAL<Musica> dal, int id) => {
                 var musica = dal.RecuperarPor(a => a.Id == id);
 
                 if (musica is null)
@@ -64,7 +68,7 @@ namespace ScreenSound.API.Endpoints
 
             });
 
-            app.MapPut("/Musicas", ([FromServices] ScreenSoundDAL<Musica> dal, [FromBody] MusicaRequestEdit musicaRequestEdit) => {
+            groupBuilder.MapPut("", ([FromServices] ScreenSoundDAL<Musica> dal, [FromBody] MusicaRequestEdit musicaRequestEdit) => {
                 var musica = dal.RecuperarPor(a => a.Id == musicaRequestEdit.Id);
 
                 if (musica is null)

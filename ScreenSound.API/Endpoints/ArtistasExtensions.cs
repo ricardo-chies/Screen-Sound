@@ -12,7 +12,11 @@ namespace ScreenSound.API.Endpoints
     {
         public static void AddEndpointsArtistas(this WebApplication app)
         {
-            app.MapGet("/Artistas", ([FromServices] ScreenSoundDAL<Artista> dal) =>
+            var groupBuilder = app.MapGroup("artistas")
+                .RequireAuthorization()
+                .WithTags("Artistas");
+
+            groupBuilder.MapGet("", ([FromServices] ScreenSoundDAL<Artista> dal) =>
             {
                 var listArtistas = dal.Listar();
 
@@ -25,7 +29,7 @@ namespace ScreenSound.API.Endpoints
                 return Results.Ok(listArtistaResponse);
             });
 
-            app.MapGet("/Artistas/{nome}", ([FromServices] ScreenSoundDAL<Artista> dal, string nome) =>
+            groupBuilder.MapGet("{nome}", ([FromServices] ScreenSoundDAL<Artista> dal, string nome) =>
             {
                 var artista = dal.RecuperarPor(artista => artista.Nome.ToUpper().Equals(nome.ToUpper()));
 
@@ -37,7 +41,7 @@ namespace ScreenSound.API.Endpoints
                 return Results.Ok(EntityToResponse(artista));
             });
 
-            app.MapPost("/Artistas", async ([FromServices] IHostEnvironment env, [FromServices] ScreenSoundDAL<Artista> dal, [FromBody] ArtistaRequest artistaRequest) =>
+            groupBuilder.MapPost("", async ([FromServices] IHostEnvironment env, [FromServices] ScreenSoundDAL<Artista> dal, [FromBody] ArtistaRequest artistaRequest) =>
             {
                 var nome = artistaRequest.nome.Trim();
                 var imagemArtista = DateTime.Now.ToString("ddMMyyyyhhss") + "." + nome + ".jpeg";
@@ -57,7 +61,7 @@ namespace ScreenSound.API.Endpoints
                 return Results.Ok();
             });
 
-            app.MapDelete("/Artistas/{id}", ([FromServices] ScreenSoundDAL<Artista> dal, int id) =>
+            groupBuilder.MapDelete("{id}", ([FromServices] ScreenSoundDAL<Artista> dal, int id) =>
             {
                 var artista = dal.RecuperarPor(artista => artista.Id == id);
 
@@ -70,7 +74,7 @@ namespace ScreenSound.API.Endpoints
                 return Results.NoContent();
             });
 
-            app.MapPut("/Artistas", ([FromServices] ScreenSoundDAL<Artista> dal, [FromBody] ArtistaRequestEdit artistaRequestEdit) => {
+            groupBuilder.MapPut("", ([FromServices] ScreenSoundDAL<Artista> dal, [FromBody] ArtistaRequestEdit artistaRequestEdit) => {
 
                 var artista = dal.RecuperarPor(a => a.Id == artistaRequestEdit.Id);
                 if (artista is null)
