@@ -1,9 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using ScreenSound.Models;
+using ScreenSound.Shared.Data.Models;
 
 namespace ScreenSound.Data
 {
-    public class Context : DbContext
+    public class Context : IdentityDbContext<PessoaAcesso, PerfilAcesso, int>
     {
         public Context(DbContextOptions<Context> options) : base(options)
         {
