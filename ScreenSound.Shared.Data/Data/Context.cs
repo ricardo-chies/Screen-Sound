@@ -28,6 +28,7 @@ namespace ScreenSound.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             // Mapeando relacionamento de n para n
+            base.OnModelCreating(modelBuilder);
             modelBuilder.Entity<Musica>()
                 .HasMany(c => c.Generos)
                 .WithMany(c => c.Musicas);
