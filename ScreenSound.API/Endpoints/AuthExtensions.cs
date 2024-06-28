@@ -12,6 +12,8 @@ namespace ScreenSound.API.Endpoints
     {
         public static void AddEndpointsAuth(this WebApplication app)
         {
+            app.MapGroup("auth").MapIdentityApi<PessoaAcesso>().WithTags("Autorização");
+
             var groupBuilder = app.MapGroup("auth")
                 .RequireAuthorization()
                 .WithTags("Autorização");

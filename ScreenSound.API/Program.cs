@@ -73,12 +73,4 @@ app.AddEndpointsMusicas();
 app.AddEndpointsGeneros();
 app.AddEndpointsAuth();
 
-app.MapGroup("auth").MapIdentityApi<PessoaAcesso>().WithTags("Autorização");
-
-//app.MapPost("auth/logout", async ([FromServices] SignInManager<PessoaAcesso> signInManager) =>
-//{
-//    await signInManager.SignOutAsync();
-//    return Results.Ok();
-//}).RequireAuthorization().WithTags("Autorização");
-
 app.Run();
