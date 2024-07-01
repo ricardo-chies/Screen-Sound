@@ -36,6 +36,7 @@ builder.Services.AddAuthorization();
 builder.Services.AddTransient<ScreenSoundDAL<Artista>>();
 builder.Services.AddTransient<ScreenSoundDAL<Musica>>();
 builder.Services.AddTransient<ScreenSoundDAL<Genero>>();
+builder.Services.AddTransient<ScreenSoundDAL<PessoaAcesso>>();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>

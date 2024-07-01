@@ -73,4 +73,18 @@ public class ScreenSoundDAL<T> where T : class
             .Include(m => m.Artista)
             .FirstOrDefault(condicao);
     }
+
+    public async Task<Artista?> RecuperarArtistaComAvaliacoesPorIdAsync(int id)
+    {
+        return await context.Artistas
+            .Include(a => a.Avaliacoes)
+            .FirstOrDefaultAsync(a => a.Id == id);
+    }
+
+    public async Task<IEnumerable<Artista>> RecuperarTodosArtistasComAvaliacoesAsync()
+    {
+        return await context.Artistas
+            .Include(a => a.Avaliacoes)
+            .ToListAsync();
+    }
 }

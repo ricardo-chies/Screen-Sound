@@ -5,6 +5,8 @@ using ScreenSound.API.Requests;
 using ScreenSound.API.Responses;
 using ScreenSound.Data;
 using ScreenSound.Models;
+using ScreenSound.Shared.Data.Models;
+using System.Security.Claims;
 
 namespace ScreenSound.API.Endpoints
 {
@@ -16,16 +18,24 @@ namespace ScreenSound.API.Endpoints
                 .RequireAuthorization()
                 .WithTags("Artistas");
 
-            groupBuilder.MapGet("", ([FromServices] ScreenSoundDAL<Artista> dal) =>
+            groupBuilder.MapGet("", async ([FromServices] ScreenSoundDAL<Artista> dal) =>
             {
-                var listArtistas = dal.Listar();
+                var listArtistas = await dal.RecuperarTodosArtistasComAvaliacoesAsync();
 
-                if (listArtistas is null)
+                if (listArtistas is null || !listArtistas.Any())
                 {
                     return Results.NotFound();
                 }
 
-                var listArtistaResponse = EntityListToResponseList(listArtistas);
+                var listArtistaResponse = listArtistas.Select(artista => new ArtistaResponse(
+                    artista.Id,
+                    artista.Nome,
+                    artista.Bio,
+                    artista.FotoPerfil)
+                {
+                    Classificacao = artista.Avaliacoes.Any() ? artista.Avaliacoes.Average(a => a.Nota) : (double?)0
+                }).ToList();
+
                 return Results.Ok(listArtistaResponse);
             });
 
@@ -86,6 +96,65 @@ namespace ScreenSound.API.Endpoints
                 dal.Atualizar(artista);
                 return Results.Ok();
             });
+
+            groupBuilder.MapGet("{id}/avaliacao", async (
+                        int id,
+                        HttpContext context,
+                        [FromServices] ScreenSoundDAL<Artista> dalArtista,
+                        [FromServices] ScreenSoundDAL<PessoaAcesso> dalPessoa
+                        ) =>
+            {
+                var artista = await dalArtista.RecuperarArtistaComAvaliacoesPorIdAsync(id);
+                if (artista is null) return Results.NotFound();
+
+                var email = context.User.Claims
+                    .FirstOrDefault(c => c.Type.Equals(ClaimTypes.Email))?.Value
+                    ?? throw new InvalidOperationException("Não foi encontrado o email da pessoa logada");
+
+                var pessoa = dalPessoa.RecuperarPor(p => p.Email!.Equals(email))
+                    ?? throw new InvalidOperationException("Não foi encontrado o email da pessoa logada");
+
+                var avaliacao = artista
+                    .Avaliacoes
+                    .FirstOrDefault(a => a.ArtistaId == id && a.PessoaId == pessoa.Id);
+
+                if (avaliacao is null) return Results.Ok(new AvaliacaoArtistaResponse(id, 0));
+                else return Results.Ok(new AvaliacaoArtistaResponse(id, avaliacao.Nota));
+            });
+
+            groupBuilder.MapPost("avaliacao", async (
+                HttpContext context,
+                [FromBody] AvaliacaoArtistaRequest request,
+                [FromServices] ScreenSoundDAL<Artista> dalArtista,
+                [FromServices] ScreenSoundDAL<PessoaAcesso> dalPessoa
+                ) =>
+            {
+                var artista = await dalArtista.RecuperarArtistaComAvaliacoesPorIdAsync(request.ArtistaId);
+                if (artista is null) return Results.NotFound();
+
+                var email = context.User.Claims
+                    .FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value
+                    ?? throw new InvalidOperationException("Não conectado");
+
+                var pessoa = dalPessoa.RecuperarPor(p => p.Email.Equals(email))
+                    ?? throw new InvalidOperationException("Não conectado");
+
+                var avaliacao = artista.Avaliacoes
+                    .FirstOrDefault(a => a.ArtistaId == artista.Id && a.PessoaId == pessoa.Id);
+
+                if (avaliacao is null)
+                {
+                    artista.AdicionarNota(pessoa.Id, request.Nota);
+                }
+                else
+                {
+                    avaliacao.Nota = request.Nota;
+                }
+
+                dalArtista.Atualizar(artista);
+
+                return Results.Created();
+            });
         }
 
         private static ICollection<ArtistaResponse> EntityListToResponseList(IEnumerable<Artista> listaDeArtistas)
@@ -95,7 +164,14 @@ namespace ScreenSound.API.Endpoints
 
         private static ArtistaResponse EntityToResponse(Artista artista)
         {
-            return new ArtistaResponse(artista.Id, artista.Nome, artista.Bio, artista.FotoPerfil);
+            return new ArtistaResponse(artista.Id, artista.Nome, artista.Bio, artista.FotoPerfil)
+            { 
+                Classificacao = artista
+                    .Avaliacoes
+                    .Select(a => a.Nota)
+                    .DefaultIfEmpty(0)
+                    .Average()
+            };
         }
 
     }

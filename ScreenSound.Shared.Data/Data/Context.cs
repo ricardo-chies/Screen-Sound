@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using ScreenSound.Models;
 using ScreenSound.Shared.Data.Models;
+using ScreenSound.Shared.Models.Models;
 
 namespace ScreenSound.Data
 {
@@ -26,6 +27,7 @@ namespace ScreenSound.Data
         public DbSet<Artista> Artistas { get; set; }
         public DbSet<Musica> Musicas { get; set; }
         public DbSet<Genero> Generos { get; set; }
+        public DbSet<AvaliacaoArtista> AvaliacaoArtistas { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -41,6 +43,15 @@ namespace ScreenSound.Data
                 .WithMany(a => a.Musicas)
                 .HasForeignKey(m => m.ArtistaId)
                 .OnDelete(DeleteBehavior.Cascade); // Cascade delete
+
+            // Adicionando chave primária dupla
+            modelBuilder.Entity<AvaliacaoArtista>()
+                .HasKey(a => new { a.ArtistaId, a.PessoaId });
+
+            modelBuilder.Entity<Artista>()
+               .HasMany(a => a.Avaliacoes)
+               .WithOne(a => a.Artista)
+               .HasForeignKey(a => a.ArtistaId);
         }
     }
 }
