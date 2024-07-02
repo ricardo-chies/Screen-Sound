@@ -10,7 +10,7 @@ namespace ScreenSound.API.Endpoints
     {
         public static void AddEndpointsGeneros(this WebApplication app)
         {
-            var groupBuilder = app.MapGroup("genero")
+            var groupBuilder = app.MapGroup("generos")
                 .RequireAuthorization()
                 .WithTags("Gêneros");
 
