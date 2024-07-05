@@ -2,7 +2,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
-using ScreenSound.API.Endpoints;
 using ScreenSound.API.Services;
 using ScreenSound.Data;
 using ScreenSound.Models;
@@ -74,10 +73,9 @@ app.UseAuthorization();
 app.UseSwagger();
 app.UseSwaggerUI();
 
-//app.AddEndpointsArtistas();
-app.AddEndpointsMusicas();
-app.AddEndpointsGeneros();
-app.AddEndpointsAuth();
+//app.AddEndpointsMusicas();
+//app.AddEndpointsGeneros();
+//app.AddEndpointsAuth();
 
 app.MapControllers();
 

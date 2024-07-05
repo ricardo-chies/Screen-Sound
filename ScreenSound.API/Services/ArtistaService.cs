@@ -16,7 +16,7 @@ namespace ScreenSound.API.Services
         {
             var listArtistas = await _dalArtista.RecuperarTodosArtistasComAvaliacoesAsync();
 
-            if (listArtistas is null || !listArtistas.Any())
+            if (listArtistas == null || !listArtistas.Any())
             {
                 return null;
             }
@@ -33,11 +33,11 @@ namespace ScreenSound.API.Services
             return listArtistaResponse;
         }
 
-        public ArtistaResponse RecuperarArtistaPorNome(string nome)
+        public async Task<ArtistaResponse> RecuperarArtistaPorNome(string nome)
         {
-            var artista = _dalArtista.RecuperarPor(a => a.Nome.ToUpper().Equals(nome.ToUpper()));
+            var artista = await _dalArtista.RecuperarPor(a => a.Nome.ToUpper().Equals(nome.ToUpper()));
 
-            if (artista is null)
+            if (artista == null)
             {
                 return null;
             }
@@ -64,46 +64,46 @@ namespace ScreenSound.API.Services
                 FotoPerfil = $"/FotosPerfil/{imagemArtista}"
             };
 
-            _dalArtista.Adicionar(artista);
+            await _dalArtista.Adicionar(artista);
             return true;
         }
 
-        public bool DeletarArtista(int id)
+        public async Task<bool> DeletarArtista(int id)
         {
-            var artista = _dalArtista.RecuperarPor(a => a.Id == id);
+            var artista = await _dalArtista.RecuperarPor(a => a.Id == id);
 
-            if (artista is null)
+            if (artista == null)
             {
                 return false;
             }
 
-            _dalArtista.DeletarArtista(artista);
+            await _dalArtista.DeletarArtista(artista);
             return true;
         }
 
-        public bool AtualizarArtista(ArtistaRequestEdit artistaRequestEdit)
+        public async Task<bool> AtualizarArtista(ArtistaRequestEdit artistaRequestEdit)
         {
-            var artista = _dalArtista.RecuperarPor(a => a.Id == artistaRequestEdit.Id);
-            if (artista is null)
+            var artista = await _dalArtista.RecuperarPor(a => a.Id == artistaRequestEdit.Id);
+            if (artista == null)
             {
                 return false;
             }
             artista.Nome = artistaRequestEdit.nome;
             artista.Bio = artistaRequestEdit.bio;
-            _dalArtista.Atualizar(artista);
+            await _dalArtista.Atualizar(artista);
             return true;
         }
 
         public async Task<AvaliacaoArtistaResponse> RecuperarAvaliacao(int id, HttpContext context)
         {
             var artista = await _dalArtista.RecuperarArtistaComAvaliacoesPorIdAsync(id);
-            if (artista is null) return null;
+            if (artista == null) return null;
 
             var email = context.User.Claims
                 .FirstOrDefault(c => c.Type.Equals(ClaimTypes.Email))?.Value
                 ?? throw new InvalidOperationException("Não foi encontrado o email da pessoa logada");
 
-            var pessoa = _dalPessoa.RecuperarPor(p => p.Email!.Equals(email))
+            var pessoa = await _dalPessoa.RecuperarPor(p => p.Email!.Equals(email))
                 ?? throw new InvalidOperationException("Não foi encontrado o email da pessoa logada");
 
             var avaliacao = artista
@@ -116,19 +116,19 @@ namespace ScreenSound.API.Services
         public async Task<bool> AdicionarAvaliacao(AvaliacaoArtistaRequest request, HttpContext context)
         {
             var artista = await _dalArtista.RecuperarArtistaComAvaliacoesPorIdAsync(request.ArtistaId);
-            if (artista is null) return false;
+            if (artista == null) return false;
 
             var email = context.User.Claims
                 .FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value
                 ?? throw new InvalidOperationException("Não conectado");
 
-            var pessoa = _dalPessoa.RecuperarPor(p => p.Email.Equals(email))
+            var pessoa = await _dalPessoa.RecuperarPor(p => p.Email.Equals(email))
                 ?? throw new InvalidOperationException("Não conectado");
 
             var avaliacao = artista.Avaliacoes
                 .FirstOrDefault(a => a.ArtistaId == artista.Id && a.PessoaId == pessoa.Id);
 
-            if (avaliacao is null)
+            if (avaliacao == null)
             {
                 artista.AdicionarNota(pessoa.Id, request.Nota);
             }
@@ -137,7 +137,7 @@ namespace ScreenSound.API.Services
                 avaliacao.Nota = request.Nota;
             }
 
-            _dalArtista.Atualizar(artista);
+            await _dalArtista.Atualizar(artista);
             return true;
         }
     }

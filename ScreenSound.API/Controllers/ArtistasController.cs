@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using ScreenSound.API.Requests;
 using ScreenSound.API.Responses;
+
 namespace ScreenSound.API.Controllers
 {
     [ApiController]
@@ -23,13 +24,13 @@ namespace ScreenSound.API.Controllers
                 return NotFound();
             }
 
-            return Ok(listArtistas);
+            return Ok(listArtistas.ToList());
         }
 
         [HttpGet("{nome}")]
-        public ActionResult<ArtistaResponse> GetArtistaPorNome(string nome)
+        public async Task<ActionResult<ArtistaResponse>> GetArtistaPorNome(string nome)
         {
-            var artista = _artistaService.RecuperarArtistaPorNome(nome);
+            var artista = await _artistaService.RecuperarArtistaPorNome(nome);
 
             if (artista == null)
             {
@@ -53,9 +54,9 @@ namespace ScreenSound.API.Controllers
         }
 
         [HttpDelete("{id}")]
-        public ActionResult DeleteArtista(int id)
+        public async Task<ActionResult> DeleteArtista(int id)
         {
-            var result = _artistaService.DeletarArtista(id);
+            var result = await _artistaService.DeletarArtista(id);
 
             if (result)
             {
@@ -66,9 +67,9 @@ namespace ScreenSound.API.Controllers
         }
 
         [HttpPut]
-        public ActionResult PutArtista([FromBody] ArtistaRequestEdit artistaRequestEdit)
+        public async Task<ActionResult> PutArtista([FromBody] ArtistaRequestEdit artistaRequestEdit)
         {
-            var result = _artistaService.AtualizarArtista(artistaRequestEdit);
+            var result = await _artistaService.AtualizarArtista(artistaRequestEdit);
 
             if (result)
             {

@@ -1,90 +1,91 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ScreenSound.Models;
+using System.Linq.Expressions;
 
-namespace ScreenSound.Data;
-public class ScreenSoundDAL<T> where T : class
+namespace ScreenSound.Data
 {
-    private readonly Context context;
+    public class ScreenSoundDAL<T> where T : class
+    {
+        private readonly Context context;
 
-    public ScreenSoundDAL(Context context)
-    {
-        this.context = context;
-    }
-
-    public IEnumerable<T> Listar()
-    {
-        return context.Set<T>().ToList();
-    }
-    public void Adicionar(T objeto)
-    {
-        context.Set<T>().Add(objeto);
-        context.SaveChanges();
-    }
-    public void Atualizar(T objeto)
-    {
-        context.Set<T>().Update(objeto);
-        context.SaveChanges();
-    }
-    public void Deletar(T objeto)
-    {
-        context.Set<T>().Remove(objeto);
-        context.SaveChanges();
-    }
-
-    public T? RecuperarPor(Func<T, bool> condicao)
-    {
-        return context.Set<T>().FirstOrDefault(condicao);
-    }
-
-    public IEnumerable<T> ListarPor(Func<T, bool> condicao)
-    {
-        return context.Set<T>().Where(condicao);
-    }
-
-    public void DeletarArtista(Artista artista)
-    {
-        // Inclui as músicas relacionadas ao artista
-        var artistaEntity = context.Set<Artista>()
-            .Include(a => a.Musicas)
-            .FirstOrDefault(a => a.Id == artista.Id);
-
-        if (artistaEntity != null)
+        public ScreenSoundDAL(Context context)
         {
-            // Remove todas as músicas relacionadas ao artista
-            context.Set<Musica>().RemoveRange(artistaEntity.Musicas);
-
-            // Remove o próprio artista
-            context.Set<Artista>().Remove(artistaEntity);
-
-            context.SaveChanges();
+            this.context = context;
         }
-    }
 
-    public IEnumerable<Musica> ListarMusicasComArtistas()
-    {
-        return context.Set<Musica>()
-            .Include(m => m.Artista)
-            .ToList();
-    }
+        public async Task<IEnumerable<T>> Listar()
+        {
+            return await context.Set<T>().ToListAsync();
+        }
 
-    public Musica? RecuperarMusicaComArtistaPor(Func<Musica, bool> condicao)
-    {
-        return context.Set<Musica>()
-            .Include(m => m.Artista)
-            .FirstOrDefault(condicao);
-    }
+        public async Task Adicionar(T objeto)
+        {
+            await context.Set<T>().AddAsync(objeto);
+            await context.SaveChangesAsync();
+        }
 
-    public async Task<Artista?> RecuperarArtistaComAvaliacoesPorIdAsync(int id)
-    {
-        return await context.Artistas
-            .Include(a => a.Avaliacoes)
-            .FirstOrDefaultAsync(a => a.Id == id);
-    }
+        public async Task Atualizar(T objeto)
+        {
+            context.Set<T>().Update(objeto);
+            await context.SaveChangesAsync();
+        }
 
-    public async Task<IEnumerable<Artista>> RecuperarTodosArtistasComAvaliacoesAsync()
-    {
-        return await context.Artistas
-            .Include(a => a.Avaliacoes)
-            .ToListAsync();
+        public async Task Deletar(T objeto)
+        {
+            context.Set<T>().Remove(objeto);
+            await context.SaveChangesAsync();
+        }
+
+        public async Task<T?> RecuperarPor(Func<T, bool> condicao)
+        {
+            return await Task.Run(() => context.Set<T>().AsEnumerable().FirstOrDefault(condicao));
+        }
+
+        public async Task<IEnumerable<T>> ListarPor(Expression<Func<T, bool>> condicao)
+        {
+            return await context.Set<T>().Where(condicao).ToListAsync();
+        }
+
+        public async Task DeletarArtista(Artista artista)
+        {
+            var artistaEntity = await context.Set<Artista>()
+                .Include(a => a.Musicas)
+                .FirstOrDefaultAsync(a => a.Id == artista.Id);
+
+            if (artistaEntity != null)
+            {
+                context.Set<Musica>().RemoveRange(artistaEntity.Musicas);
+                context.Set<Artista>().Remove(artistaEntity);
+                await context.SaveChangesAsync();
+            }
+        }
+
+        public async Task<IEnumerable<Musica>> ListarMusicasComArtistas()
+        {
+            return await context.Set<Musica>()
+                .Include(m => m.Artista)
+                .ToListAsync();
+        }
+
+        public async Task<Musica?> RecuperarMusicaComArtistaPor(Func<Musica, bool> condicao)
+        {
+            return await context.Set<Musica>()
+                .Include(m => m.Artista)
+                .FirstOrDefaultAsync(m => condicao(m));
+        }
+
+        public async Task<Artista?> RecuperarArtistaComAvaliacoesPorIdAsync(int id)
+        {
+            return await context.Artistas
+                .Include(a => a.Avaliacoes)
+                .FirstOrDefaultAsync(a => a.Id == id);
+        }
+
+        public async Task<IEnumerable<Artista>> RecuperarTodosArtistasComAvaliacoesAsync()
+        {
+            return await context.Artistas
+                .Include(a => a.Avaliacoes)
+                .ToListAsync();
+        }
     }
 }
