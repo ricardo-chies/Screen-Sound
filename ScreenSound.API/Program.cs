@@ -43,6 +43,7 @@ builder.Services.AddTransient<ScreenSoundDAL<PessoaAcesso>>();
 
 builder.Services.AddScoped<IArtistaService, ArtistaService>();
 builder.Services.AddScoped<IMusicaService, MusicaService>();
+builder.Services.AddScoped<IGeneroService, GeneroService>();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
