@@ -1,6 +1,8 @@
 ﻿using ScreenSound.API.Requests;
 using ScreenSound.API.Responses;
 
+namespace ScreenSound.API.Interfaces;
+
 public interface IArtistaService
 {
     Task<IEnumerable<ArtistaResponse>> RecuperarTodosArtistas();

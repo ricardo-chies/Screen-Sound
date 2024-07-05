@@ -4,6 +4,7 @@ using ScreenSound.Data;
 using ScreenSound.Models;
 using System.Security.Claims;
 using ScreenSound.Shared.Data.Models;
+using ScreenSound.API.Interfaces;
 
 namespace ScreenSound.API.Services
 {

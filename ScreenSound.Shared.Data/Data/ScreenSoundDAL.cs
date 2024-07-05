@@ -36,9 +36,9 @@ namespace ScreenSound.Data
             await context.SaveChangesAsync();
         }
 
-        public async Task<T?> RecuperarPor(Func<T, bool> condicao)
+        public async Task<T?> RecuperarPor(Expression<Func<T, bool>> condicao)
         {
-            return await Task.Run(() => context.Set<T>().AsEnumerable().FirstOrDefault(condicao));
+            return await context.Set<T>().FirstOrDefaultAsync(condicao);
         }
 
         public async Task<IEnumerable<T>> ListarPor(Expression<Func<T, bool>> condicao)
@@ -67,11 +67,11 @@ namespace ScreenSound.Data
                 .ToListAsync();
         }
 
-        public async Task<Musica?> RecuperarMusicaComArtistaPor(Func<Musica, bool> condicao)
+        public async Task<Musica?> RecuperarMusicaComArtistaPor(Expression<Func<Musica, bool>> condicao)
         {
             return await context.Set<Musica>()
                 .Include(m => m.Artista)
-                .FirstOrDefaultAsync(m => condicao(m));
+                .FirstOrDefaultAsync(condicao);
         }
 
         public async Task<Artista?> RecuperarArtistaComAvaliacoesPorIdAsync(int id)

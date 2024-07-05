@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using ScreenSound.API.Interfaces;
 using ScreenSound.API.Services;
 using ScreenSound.Data;
 using ScreenSound.Models;
@@ -41,6 +42,7 @@ builder.Services.AddTransient<ScreenSoundDAL<Genero>>();
 builder.Services.AddTransient<ScreenSoundDAL<PessoaAcesso>>();
 
 builder.Services.AddScoped<IArtistaService, ArtistaService>();
+builder.Services.AddScoped<IMusicaService, MusicaService>();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
@@ -73,7 +75,6 @@ app.UseAuthorization();
 app.UseSwagger();
 app.UseSwaggerUI();
 
-//app.AddEndpointsMusicas();
 //app.AddEndpointsGeneros();
 //app.AddEndpointsAuth();
 

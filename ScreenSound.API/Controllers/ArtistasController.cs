@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using ScreenSound.API.Interfaces;
 using ScreenSound.API.Requests;
 using ScreenSound.API.Responses;
 
