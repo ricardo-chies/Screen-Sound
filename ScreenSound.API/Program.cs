@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using ScreenSound.API.Endpoints;
+using ScreenSound.API.Services;
 using ScreenSound.Data;
 using ScreenSound.Models;
 using ScreenSound.Shared.Data.Models;
@@ -33,10 +34,14 @@ builder.Services.AddDbContext<Context>((options) =>
 builder.Services.AddIdentityApiEndpoints<PessoaAcesso>().AddEntityFrameworkStores<Context>();
 builder.Services.AddAuthorization();
 
+builder.Services.AddControllers();
+
 builder.Services.AddTransient<ScreenSoundDAL<Artista>>();
 builder.Services.AddTransient<ScreenSoundDAL<Musica>>();
 builder.Services.AddTransient<ScreenSoundDAL<Genero>>();
 builder.Services.AddTransient<ScreenSoundDAL<PessoaAcesso>>();
+
+builder.Services.AddScoped<IArtistaService, ArtistaService>();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
@@ -69,9 +74,11 @@ app.UseAuthorization();
 app.UseSwagger();
 app.UseSwaggerUI();
 
-app.AddEndpointsArtistas();
+//app.AddEndpointsArtistas();
 app.AddEndpointsMusicas();
 app.AddEndpointsGeneros();
 app.AddEndpointsAuth();
+
+app.MapControllers();
 
 app.Run();
