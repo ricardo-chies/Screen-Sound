@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using ScreenSound.API.Interfaces;
 using ScreenSound.API.Requests;
 using ScreenSound.API.Responses;
@@ -7,6 +8,7 @@ namespace ScreenSound.API.Controllers
 {
     [ApiController]
     [Route("[Controller]")]
+    [Authorize]
     public class GenerosController(IGeneroService generoService) : ControllerBase
     {
         private readonly IGeneroService _generoService = generoService;
