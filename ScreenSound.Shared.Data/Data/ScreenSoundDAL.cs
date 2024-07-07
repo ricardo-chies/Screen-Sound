@@ -1,17 +1,13 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ScreenSound.Models;
+using ScreenSound.Shared.Data.Interfaces;
 using System.Linq.Expressions;
 
 namespace ScreenSound.Data
 {
-    public class ScreenSoundDAL<T> where T : class
+    public class ScreenSoundDAL<T>(Context context) : IScreenSoundDAL<T> where T : class
     {
-        private readonly Context context;
-
-        public ScreenSoundDAL(Context context)
-        {
-            this.context = context;
-        }
+        private readonly Context context = context;
 
         public async Task<IEnumerable<T>> Listar()
         {
