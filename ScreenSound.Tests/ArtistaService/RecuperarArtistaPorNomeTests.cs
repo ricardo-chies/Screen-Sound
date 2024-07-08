@@ -17,12 +17,13 @@ namespace ScreenSound.Tests
             service = new ArtistaService(dalArtista.Object, null);
         }
 
-        [Fact]
-        public async Task RecuperarArtistaPorNomeTest_ReturnArtista()
+        [Theory]
+        [InlineData("Michael Jackson", "Michael Jackson", "Rei do Pop")]
+        [InlineData("VCSNVS", null, null)]
+        public async Task RecuperarArtistaPorNomeTest_ReturnArtista(string nome, string expectedNome, string expectedBio)
         {
             // Arrange
-            string nome = "Michael Jackson";
-            var expectedArtista = new Artista("Michael Jackson", "Rei do Pop");
+            Artista? expectedArtista = expectedNome == null ? null : new Artista(expectedNome, expectedBio);
 
             dalArtista.Setup(a => a.RecuperarPor(a => a.Nome.ToUpper().Equals(nome.ToUpper())))
                       .ReturnsAsync(expectedArtista);
@@ -31,9 +32,17 @@ namespace ScreenSound.Tests
             var result = await service.RecuperarArtistaPorNome(nome);
 
             // Assert
-            Assert.NotNull(result);
-            Assert.Equal(expectedArtista.Nome, result.Nome);
-            Assert.Equal(expectedArtista.Bio, result.Bio);
+            if (expectedArtista == null)
+            {
+                Assert.Null(result);
+            }
+            else
+            {
+                Assert.NotNull(result);
+                Assert.Equal(expectedArtista.Nome, result.Nome);
+                Assert.Equal(expectedArtista.Bio, result.Bio);
+            }
         }
+
     }
 }
