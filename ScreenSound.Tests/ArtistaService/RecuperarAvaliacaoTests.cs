@@ -8,7 +8,7 @@ using ScreenSound.Shared.Data.Models;
 using ScreenSound.Shared.Models.Models;
 using System.Security.Claims;
 
-namespace ScreenSound.Tests
+namespace ScreenSound.Tests.ArtistaServices
 {
     public class RecuperarAvaliacaoTests
     {

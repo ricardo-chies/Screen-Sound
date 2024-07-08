@@ -6,7 +6,7 @@ using ScreenSound.Models;
 using ScreenSound.Shared.Data.Interfaces;
 using System.Text;
 
-namespace ScreenSound.Tests
+namespace ScreenSound.Tests.ArtistaServices
 {
     public class AdicionarArtistaTests
     {

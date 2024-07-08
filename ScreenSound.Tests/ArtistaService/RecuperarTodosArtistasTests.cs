@@ -3,7 +3,7 @@ using ScreenSound.API.Services;
 using ScreenSound.Models;
 using ScreenSound.Shared.Data.Interfaces;
 
-namespace ScreenSound.Tests
+namespace ScreenSound.Tests.ArtistaServices
 {
     public class RecuperarTodosArtistasTests
     {
