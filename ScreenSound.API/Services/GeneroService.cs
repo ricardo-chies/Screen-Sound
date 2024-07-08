@@ -3,12 +3,13 @@ using ScreenSound.API.Requests;
 using ScreenSound.API.Responses;
 using ScreenSound.Data;
 using ScreenSound.Models;
+using ScreenSound.Shared.Data.Interfaces;
 
 namespace ScreenSound.API.Services
 {
-    public class GeneroService(ScreenSoundDAL<Genero> dalGenero) : IGeneroService
+    public class GeneroService(IScreenSoundDAL<Genero> dalGenero) : IGeneroService
     {
-        private readonly ScreenSoundDAL<Genero> _dalGenero = dalGenero;
+        private readonly IScreenSoundDAL<Genero> _dalGenero = dalGenero;
 
         public async Task<IEnumerable<GeneroResponse>> ListarGeneros()
         {
