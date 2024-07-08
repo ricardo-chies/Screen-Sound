@@ -5,13 +5,14 @@ using ScreenSound.Models;
 using System.Security.Claims;
 using ScreenSound.Shared.Data.Models;
 using ScreenSound.API.Interfaces;
+using ScreenSound.Shared.Data.Interfaces;
 
 namespace ScreenSound.API.Services
 {
-    public class ArtistaService(ScreenSoundDAL<Artista> dalArtista, ScreenSoundDAL<PessoaAcesso> dalPessoa) : IArtistaService
+    public class ArtistaService(IScreenSoundDAL<Artista> dalArtista, IScreenSoundDAL<PessoaAcesso> dalPessoa) : IArtistaService
     {
-        private readonly ScreenSoundDAL<Artista> _dalArtista = dalArtista;
-        private readonly ScreenSoundDAL<PessoaAcesso> _dalPessoa = dalPessoa;
+        private readonly IScreenSoundDAL<Artista> _dalArtista = dalArtista;
+        private readonly IScreenSoundDAL<PessoaAcesso> _dalPessoa = dalPessoa;
 
         public async Task<IEnumerable<ArtistaResponse>> RecuperarTodosArtistas()
         {

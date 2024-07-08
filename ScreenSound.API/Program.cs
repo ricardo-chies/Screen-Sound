@@ -7,6 +7,7 @@ using ScreenSound.API.Interfaces;
 using ScreenSound.API.Services;
 using ScreenSound.Data;
 using ScreenSound.Models;
+using ScreenSound.Shared.Data.Interfaces;
 using ScreenSound.Shared.Data.Models;
 using System.Text.Json.Serialization;
 
@@ -36,6 +37,9 @@ builder.Services.AddIdentityApiEndpoints<PessoaAcesso>().AddEntityFrameworkStore
 builder.Services.AddAuthorization();
 
 builder.Services.AddControllers();
+
+// Registrar IScreenSoundDAL<T> com a implementação ScreenSoundDAL<T>
+builder.Services.AddTransient(typeof(IScreenSoundDAL<>), typeof(ScreenSoundDAL<>));
 
 builder.Services.AddTransient<ScreenSoundDAL<Artista>>();
 builder.Services.AddTransient<ScreenSoundDAL<Musica>>();
