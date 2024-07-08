@@ -3,13 +3,14 @@ using ScreenSound.API.Requests;
 using ScreenSound.API.Responses;
 using ScreenSound.Data;
 using ScreenSound.Models;
+using ScreenSound.Shared.Data.Interfaces;
 
 namespace ScreenSound.API.Services
 {
-    public class MusicaService(ScreenSoundDAL<Musica> dalMusica, ScreenSoundDAL<Genero> dalGenero) : IMusicaService
+    public class MusicaService(IScreenSoundDAL<Musica> dalMusica, IScreenSoundDAL<Genero> dalGenero) : IMusicaService
     {
-        private readonly ScreenSoundDAL<Musica> _dalMusica = dalMusica;
-        private readonly ScreenSoundDAL<Genero> _dalGenero = dalGenero;
+        private readonly IScreenSoundDAL<Musica> _dalMusica = dalMusica;
+        private readonly IScreenSoundDAL<Genero> _dalGenero = dalGenero;
 
         public async Task<IEnumerable<MusicaResponse>> ListarMusicas()
         {
