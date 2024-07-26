@@ -5,7 +5,7 @@ using ScreenSound.API.Services;
 using ScreenSound.Models;
 using ScreenSound.Shared.Data.Interfaces;
 
-namespace ScreenSound.Tests.GeneroServices
+namespace ScreenSound.Tests.UnitTests.GeneroServices
 {
     public class ListarGenerosTests
     {

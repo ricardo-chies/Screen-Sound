@@ -3,7 +3,7 @@ using ScreenSound.API.Services;
 using ScreenSound.Models;
 using ScreenSound.Shared.Data.Interfaces;
 
-namespace ScreenSound.Tests.ArtistaServices
+namespace ScreenSound.Tests.UnitTests.ArtistaServices
 {
     public class DeletarArtistaTests
     {

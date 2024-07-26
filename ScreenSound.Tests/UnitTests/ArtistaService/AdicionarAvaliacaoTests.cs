@@ -7,7 +7,7 @@ using ScreenSound.Shared.Data.Interfaces;
 using ScreenSound.Shared.Data.Models;
 using System.Security.Claims;
 
-namespace ScreenSound.Tests.ArtistaServices
+namespace ScreenSound.Tests.UnitTests.ArtistaServices
 {
     public class AdicionarAvaliacaoTests
     {

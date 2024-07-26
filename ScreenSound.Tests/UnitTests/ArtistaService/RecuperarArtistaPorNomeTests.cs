@@ -4,7 +4,7 @@ using ScreenSound.Models;
 using ScreenSound.Shared.Data.Interfaces;
 using ScreenSound.Shared.Data.Models;
 
-namespace ScreenSound.Tests.ArtistaServices
+namespace ScreenSound.Tests.UnitTests.ArtistaServices
 {
     public class RecuperarArtistaPorNomeTests
     {
