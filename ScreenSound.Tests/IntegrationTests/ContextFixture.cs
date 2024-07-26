@@ -1,31 +1,51 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ScreenSound.Data;
+using Testcontainers.MySql;
 
 namespace ScreenSound.Tests.IntegracaoDB
 {
-    public class ContextFixture : IDisposable
+    public class ContextFixture : IAsyncLifetime
     {
-        public Context Context { get; }
+        private readonly MySqlContainer _mySqlContainer;
+        public Context Context { get; private set; }
 
         public ContextFixture()
         {
+            _mySqlContainer = new MySqlBuilder()
+                .WithImage("mysql:8.0")
+                .WithUsername("tester")
+                .WithPassword("123456")
+                .WithDatabase("ScreenSound_Test")
+                .Build();
+        }
+
+        public async Task InitializeAsync()
+        {
+            // Inicia o container MySQL
+            await _mySqlContainer.StartAsync();
+
+            // Configura o contexto do Entity Framework para usar o banco de dados no container
             var options = new DbContextOptionsBuilder<Context>()
-                .UseMySql("server=localhost;port=3306;database=ScreenSound_Test;user=root;password=123456;Persist Security Info=False",
-                new MySqlServerVersion(new Version(7, 0, 0)))
+                .UseMySql(_mySqlContainer.GetConnectionString(),
+                new MySqlServerVersion(new Version(8, 0, 0)))
                 .Options;
 
             Context = new Context(options);
 
-            // Cria o banco de dados de teste se não existir
-            Context.Database.EnsureCreated();
+            // Aplica as migrations para criar o banco de dados
+            await Context.Database.MigrateAsync();
         }
 
-        public void Dispose()
+        public async Task DisposeAsync()
         {
-            // Opção para deletar o banco de dados após os testes, para começar com um banco limpo nos próximos testes
-            // Somente faça isso em ambientes de teste e não em ambientes de desenvolvimento ou produção
-            //Context.Database.EnsureDeleted();
-            Context.Dispose();
+            // Limpeza: Deleta o banco de dados de teste, se descomentar, irá gerar um novo banco a cada teste
+            // await Context.Database.EnsureDeletedAsync();
+
+            // Para o container e libera os recursos
+            await _mySqlContainer.StopAsync();
+            await _mySqlContainer.DisposeAsync();
+
+            await Context.DisposeAsync();
         }
     }
 }
