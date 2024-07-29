@@ -8,11 +8,11 @@ using Xunit.Abstractions;
 namespace ScreenSound.Tests.IntegrationTests
 {
     [Collection("ContextCollection")]
-    public class IntegracaoTests
+    public class RecuperarMusicaIntegrationTests
     {
         private readonly Context context;
         private readonly ScreenSoundDAL<Musica> dalMusica;
-        public IntegracaoTests(ContextFixture fixture, ITestOutputHelper output)
+        public RecuperarMusicaIntegrationTests(ContextFixture fixture, ITestOutputHelper output)
         {
 
             context = fixture.Context;
