@@ -1,3 +1,4 @@
+using Bogus;
 using Microsoft.AspNetCore.Identity.Data;
 using System.Net;
 using System.Net.Http.Json;
@@ -11,11 +12,14 @@ namespace ScreenSound.Tests.Integration.API
         {
             // arrange
             var app = new ScreenSoundWebApplicationFactory();
-
             using var client = app.CreateClient();
             var requestUri = "/auth/register";
 
-            var user = new RegisterRequest { Email = "teste@email.com", Password = "Senha@123" };
+            var faker = new Faker<RegisterRequest>()
+                .RuleFor(u => u.Email, f => f.Internet.Email())
+                .RuleFor(u => u.Password, f => f.Internet.Password());
+
+            var user = faker.Generate();
 
             // act
             var result = await client.PostAsJsonAsync(requestUri, user);
