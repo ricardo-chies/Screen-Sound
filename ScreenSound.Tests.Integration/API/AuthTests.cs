@@ -1,5 +1,6 @@
 using Bogus;
 using Microsoft.AspNetCore.Identity.Data;
+using ScreenSound.Tests.Integration.API.Context;
 using System.Net;
 using System.Net.Http.Json;
 

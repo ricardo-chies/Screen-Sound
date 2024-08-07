@@ -2,6 +2,7 @@
 using System.Net;
 using ScreenSound.API.Requests;
 using System.Text;
+using ScreenSound.Tests.Integration.API.Context;
 
 namespace ScreenSound.Tests.Integration.API
 {

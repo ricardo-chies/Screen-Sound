@@ -4,32 +4,31 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using ScreenSound.Data;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text.Json;
 
-namespace ScreenSound.Tests.Integration
+namespace ScreenSound.Tests.Integration.API.Context
 {
     public class ScreenSoundWebApplicationFactory : WebApplicationFactory<Program>
     {
         // Utilizado para testes de Integração na API, utilizando o MySql criado container com docker-compose.
-        public Context Context { get; }
+        public Data.Context Context { get; }
 
         private IServiceScope scope;
 
         public ScreenSoundWebApplicationFactory()
         {
-            this.scope = Services.CreateScope();
-            Context = scope.ServiceProvider.GetRequiredService<Context>();
+            scope = Services.CreateScope();
+            Context = scope.ServiceProvider.GetRequiredService<Data.Context>();
         }
 
         protected override void ConfigureWebHost(IWebHostBuilder builder)
         {
             builder.ConfigureServices(services =>
             {
-                services.RemoveAll(typeof(DbContextOptions<Context>));
-                services.AddDbContext<Context>(options => options
+                services.RemoveAll(typeof(DbContextOptions<Data.Context>));
+                services.AddDbContext<Data.Context>(options => options
                 .UseLazyLoadingProxies()
                 .UseMySql("server = localhost; port = 3307; database = ScreenSound; user = root; password = 123456; Persist Security Info = False", // MySql Container
                 new MySqlServerVersion(new Version(7, 0, 0))));
@@ -40,7 +39,7 @@ namespace ScreenSound.Tests.Integration
 
         public async Task<HttpClient> GetClientWithAccesTokenAsync()
         {
-            var client = this.CreateClient();
+            var client = CreateClient();
             var requestUri = "/auth/login";
 
             var user = new LoginRequest { Email = "teste@email.com", Password = "Senha@123" };

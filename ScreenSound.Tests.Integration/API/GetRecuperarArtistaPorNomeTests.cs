@@ -1,4 +1,5 @@
 ﻿using ScreenSound.API.Responses;
+using ScreenSound.Tests.Integration.API.Context;
 using System.Net;
 using System.Net.Http.Json;
 

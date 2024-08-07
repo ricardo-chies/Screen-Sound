@@ -1,24 +1,24 @@
 ﻿using Bogus;
 using ScreenSound.Data;
 using ScreenSound.Models;
-using ScreenSound.Tests.IntegracaoDB;
+using ScreenSound.Tests.Integration.MySql.Context;
 
-namespace ScreenSound.Tests.IntegrationTests
+namespace ScreenSound.Tests.Integration.MySql
 {
     [Collection("ContextCollection")]
-    public class AdicionarMusicaIntegrationTests
+    public class AdicionarMusicaDALTests
     {
-        private readonly Context context;
+        private readonly Data.Context context;
         private readonly ScreenSoundDAL<Musica> dalMusica;
 
-        public AdicionarMusicaIntegrationTests(ContextFixture fixture)
+        public AdicionarMusicaDALTests(ContextFixture fixture)
         {
             context = fixture.Context;
             dalMusica = new ScreenSoundDAL<Musica>(context);
         }
 
         [Fact]
-        public async Task AdicionarMusica_DeveAdicionarMusicaNoBancoDeDados()
+        public async Task AdicionarMusica_Success()
         {
             // Arrange
             var generoFaker = new Faker<Genero>()

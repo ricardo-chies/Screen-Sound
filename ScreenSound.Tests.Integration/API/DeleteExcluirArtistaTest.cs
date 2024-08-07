@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using ScreenSound.Tests.Integration.API.Context;
 
 namespace ScreenSound.Tests.Integration.API
 {

@@ -1,6 +1,4 @@
-﻿using ScreenSound.Tests.Integration;
-
-namespace ScreenSound.Tests.IntegracaoDB
+﻿namespace ScreenSound.Tests.Integration.API.Context
 {
     [CollectionDefinition("ContextCollection")]
     public class ContextCollection : ICollectionFixture<ScreenSoundWebApplicationFactory>

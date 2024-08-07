@@ -2,12 +2,13 @@
 using ScreenSound.Data;
 using Testcontainers.MySql;
 
-namespace ScreenSound.Tests.IntegracaoDB
+namespace ScreenSound.Tests.Integration.MySql.Context
 {
     public class ContextFixture : IAsyncLifetime
     {
+        // Utilizado para testes de Integração no banco de dados MySql, criando novo banco para os testes.
         private readonly MySqlContainer _mySqlContainer;
-        public Context Context { get; private set; }
+        public Data.Context Context { get; private set; }
 
         public ContextFixture()
         {
@@ -25,12 +26,12 @@ namespace ScreenSound.Tests.IntegracaoDB
             await _mySqlContainer.StartAsync();
 
             // Configura o contexto do Entity Framework para usar o banco de dados no container
-            var options = new DbContextOptionsBuilder<Context>()
+            var options = new DbContextOptionsBuilder<Data.Context>()
                 .UseMySql(_mySqlContainer.GetConnectionString(),
                 new MySqlServerVersion(new Version(8, 0, 0)))
                 .Options;
 
-            Context = new Context(options);
+            Context = new Data.Context(options);
 
             // Aplica as migrations para criar o banco de dados
             await Context.Database.MigrateAsync();

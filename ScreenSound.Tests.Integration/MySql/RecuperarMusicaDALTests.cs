@@ -2,17 +2,17 @@
 using Microsoft.EntityFrameworkCore;
 using ScreenSound.Data;
 using ScreenSound.Models;
-using ScreenSound.Tests.IntegracaoDB;
+using ScreenSound.Tests.Integration.MySql.Context;
 using Xunit.Abstractions;
 
-namespace ScreenSound.Tests.IntegrationTests
+namespace ScreenSound.Tests.Integration.MySql
 {
     [Collection("ContextCollection")]
-    public class RecuperarMusicaIntegrationTests
+    public class RecuperarMusicaDALTests
     {
-        private readonly Context context;
+        private readonly Data.Context context;
         private readonly ScreenSoundDAL<Musica> dalMusica;
-        public RecuperarMusicaIntegrationTests(ContextFixture fixture, ITestOutputHelper output)
+        public RecuperarMusicaDALTests(ContextFixture fixture, ITestOutputHelper output)
         {
 
             context = fixture.Context;
@@ -68,7 +68,7 @@ namespace ScreenSound.Tests.IntegrationTests
         }
 
         [Fact]
-        public void RetornaNuloQuandoIdInexistente()
+        public void RecuperarMusicaPor_IdInexistente()
         {
             //arrange
             var idInexistente = -1;
