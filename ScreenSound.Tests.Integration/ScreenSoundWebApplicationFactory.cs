@@ -14,6 +14,16 @@ namespace ScreenSound.Tests.Integration
     public class ScreenSoundWebApplicationFactory : WebApplicationFactory<Program>
     {
         // Utilizado para testes de Integração na API, utilizando o MySql criado container com docker-compose.
+        public Context Context { get; }
+
+        private IServiceScope scope;
+
+        public ScreenSoundWebApplicationFactory()
+        {
+            this.scope = Services.CreateScope();
+            Context = scope.ServiceProvider.GetRequiredService<Context>();
+        }
+
         protected override void ConfigureWebHost(IWebHostBuilder builder)
         {
             builder.ConfigureServices(services =>
