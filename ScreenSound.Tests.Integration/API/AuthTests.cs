@@ -5,24 +5,28 @@ using System.Net.Http.Json;
 
 namespace ScreenSound.Tests.Integration.API
 {
-    public class AuthTests
+    [Collection("ContextCollection")]
+    public class AuthTests(ScreenSoundWebApplicationFactory factory) : IClassFixture<ScreenSoundWebApplicationFactory>
     {
+        private readonly ScreenSoundWebApplicationFactory _factory = factory;
+
         [Fact]
         public async Task PostRegister()
         {
             // arrange
-            var app = new ScreenSoundWebApplicationFactory();
-            using var client = app.CreateClient();
+            using var client = _factory.CreateClient();
             var requestUri = "/auth/register";
 
-            var faker = new Faker<RegisterRequest>()
+            var faker = new Faker<RegisterRequest>("pt_BR")
+                .StrictMode(true)
                 .RuleFor(u => u.Email, f => f.Internet.Email())
-                .RuleFor(u => u.Password, f => f.Internet.Password());
+                .RuleFor(u => u.Password, f => "Senha@123");
 
             var user = faker.Generate();
 
             // act
             var result = await client.PostAsJsonAsync(requestUri, user);
+            var content = await result.Content.ReadAsStringAsync();
 
             // assert
             Assert.Equal(HttpStatusCode.OK, result.StatusCode);
@@ -32,9 +36,7 @@ namespace ScreenSound.Tests.Integration.API
         public async Task PostLogin()
         {
             // arrange
-            var app = new ScreenSoundWebApplicationFactory();
-
-            using var client = app.CreateClient();
+            using var client = _factory.CreateClient();
             var requestUri = "/auth/login?useCookies=true";
 
             var user = new LoginRequest { Email = "teste@email.com", Password = "Senha@123" };
