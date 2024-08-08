@@ -6,11 +6,11 @@ using System.Reflection;
 
 namespace ScreenSound.Tests.Interface.Pages
 {
-    public class ArtistasPage : IDisposable
+    public class ArtistasPageTests : IDisposable
     {
         private IWebDriver driver;
 
-        public ArtistasPage()
+        public ArtistasPageTests()
         {
             driver = new ChromeDriver(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
         }
