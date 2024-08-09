@@ -1,17 +1,17 @@
-﻿using OpenQA.Selenium.Chrome;
-using OpenQA.Selenium;
+﻿using OpenQA.Selenium;
 using ScreenSound.Tests.Interface.PageObject;
+using ScreenSound.Tests.Interface.Context;
 
 namespace ScreenSound.Tests.Interface.Pages
 {
-    public class LoginPageTests : IDisposable
+    public class LoginPageTests : IClassFixture<WebDriverFixture>
     {
         private readonly IWebDriver driver;
         private readonly LoginPO loginPO;
 
-        public LoginPageTests()
+        public LoginPageTests(WebDriverFixture fixture)
         {
-            driver = new ChromeDriver();
+            driver = fixture.Driver;
             loginPO = new LoginPO(driver);
         }
 

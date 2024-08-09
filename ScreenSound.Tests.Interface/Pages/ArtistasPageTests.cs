@@ -1,19 +1,13 @@
 ﻿using OpenQA.Selenium;
-using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Support.UI;
+using ScreenSound.Tests.Interface.Context;
 using SeleniumExtras.WaitHelpers;
-using System.Reflection;
 
 namespace ScreenSound.Tests.Interface.Pages
 {
-    public class ArtistasPageTests : IDisposable
+    public class ArtistasPageTests(WebDriverFixture fixture) : IClassFixture<WebDriverFixture>
     {
-        private IWebDriver driver;
-
-        public ArtistasPageTests()
-        {
-            driver = new ChromeDriver(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
-        }
+        private readonly IWebDriver driver = fixture.Driver;
 
         [Fact]
         public void VerificarTitulo()
@@ -32,12 +26,6 @@ namespace ScreenSound.Tests.Interface.Pages
 
             // Assert
             Assert.True(confirmationTitle);
-        }
-
-        public void Dispose()
-        {
-            driver.Quit();
-            driver.Dispose();
         }
     }
 }

@@ -1,18 +1,17 @@
 ﻿using OpenQA.Selenium;
-using OpenQA.Selenium.Chrome;
+using ScreenSound.Tests.Interface.Context;
 using ScreenSound.Tests.Interface.PageObject;
-using System.Reflection;
 
 namespace ScreenSound.Tests.Interface.Pages
 {
-    public class HomePageTests : IDisposable
+    public class HomePageTests : IClassFixture<WebDriverFixture>
     {
         private readonly IWebDriver driver;
         private readonly HomePO homePO;
 
-        public HomePageTests()
+        public HomePageTests(WebDriverFixture fixture)
         {
-            driver = new ChromeDriver(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
+            driver = fixture.Driver;
             homePO = new HomePO(driver);
         }
 
