@@ -1,8 +1,6 @@
 ﻿using OpenQA.Selenium;
-using OpenQA.Selenium.Support.UI;
 using ScreenSound.Tests.Interface.Context;
 using ScreenSound.Tests.Interface.PageObject;
-using SeleniumExtras.WaitHelpers;
 
 namespace ScreenSound.Tests.Interface.Pages
 {
