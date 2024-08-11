@@ -35,16 +35,20 @@ namespace ScreenSound.Tests.Interface.Pages
             loginPO.Logout();
         }
 
-        [Fact]
-        public void LoginError()
+        [Theory]
+        [InlineData("teste@email.com", "Senha@Errada")]
+        [InlineData("emailErrado@email.com", "Senha@123")]
+        [InlineData("", "Senha@123")]
+        [InlineData("teste@email.com", "")]
+        public void LoginError(string email, string password)
         {
             // Arrange
             loginPO.Go("https://localhost:7073/");
 
             // Act
             loginPO.ClickLogin();
-            loginPO.EnterEmail("teste@email.com");
-            loginPO.EnterPassword("Senha@Errada");
+            loginPO.EnterEmail(email);
+            loginPO.EnterPassword(password);
             loginPO.SubmitLogin();
 
             // Assert
