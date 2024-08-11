@@ -4,7 +4,8 @@ using ScreenSound.Tests.Interface.Context;
 
 namespace ScreenSound.Tests.Interface.Pages
 {
-    public class LoginPageTests : IClassFixture<WebDriverFixture>
+    [Collection("WebDriverFixture")]
+    public class LoginPageTests
     {
         private readonly IWebDriver driver;
         private readonly LoginPO loginPO;

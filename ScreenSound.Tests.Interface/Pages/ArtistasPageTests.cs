@@ -4,13 +4,16 @@ using ScreenSound.Tests.Interface.PageObject;
 
 namespace ScreenSound.Tests.Interface.Pages
 {
-    public class ArtistasPageTests : IClassFixture<WebDriverFixture>
+    [Collection("WebDriverFixture")]
+    public class ArtistasPageTests
     {
+        private readonly WebDriverFixture fixture;
         private readonly IWebDriver driver;
         private readonly ArtistasPO artistaPO;
 
         public ArtistasPageTests(WebDriverFixture fixture)
         {
+            this.fixture = fixture;
             driver = fixture.Driver;
             artistaPO = new ArtistasPO(driver);
         }
@@ -20,7 +23,7 @@ namespace ScreenSound.Tests.Interface.Pages
         {
             // Arrange
             driver.Navigate().GoToUrl("https://localhost:7073/");
-            Cookie authCookie = AuthIdentityCookie.ObterCookie(driver);
+            Cookie authCookie = fixture.ObterCookie();
 
             artistaPO.GoToArtistasPage("https://localhost:7073/Artistas", authCookie);
 
