@@ -15,5 +15,7 @@ jobs:
            uses: actions/checkout@v2
          - name: Execução Unit tests
            run: dotnet test ./ScreenSound.Tests
+         - name: Execução Integration tests
+           run: dotnet test ./ScreenSound.Tests.Integration
          - name: Publish API
            run: dotnet publish ./ScreenSound.API

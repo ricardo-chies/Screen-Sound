@@ -7,21 +7,19 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text.Json;
+using Testcontainers.MySql;
 
 namespace ScreenSound.Tests.Integration.API.Context
 {
-    public class ScreenSoundWebApplicationFactory : WebApplicationFactory<Program>
+    public class ScreenSoundWebApplicationFactory : WebApplicationFactory<Program>, IAsyncLifetime
     {
         // Utilizado para testes de Integração na API, utilizando o MySql criado container com docker-compose.
-        public Data.Context Context { get; }
+        public Data.Context Context { get; private set; }
 
         private IServiceScope scope;
-
-        public ScreenSoundWebApplicationFactory()
-        {
-            scope = Services.CreateScope();
-            Context = scope.ServiceProvider.GetRequiredService<Data.Context>();
-        }
+        private readonly MySqlContainer mySqlContainer = new MySqlBuilder()
+            .WithImage("mysql:8.0")
+            .Build();
 
         protected override void ConfigureWebHost(IWebHostBuilder builder)
         {
@@ -53,6 +51,17 @@ namespace ScreenSound.Tests.Integration.API.Context
             return client;
         }
 
+        public async Task InitializeAsync()
+        {
+            await mySqlContainer.StartAsync();
+            scope = Services.CreateScope();
+            Context = scope.ServiceProvider.GetRequiredService<Data.Context>();
+        }
+
+        async Task IAsyncLifetime.DisposeAsync()
+        {
+            await mySqlContainer.DisposeAsync();
+        }
     }
 
     internal class UserTokenDTO
