@@ -6,6 +6,11 @@ A base desse projeto foi realizada em algumas formações que realizei na Alura.
 Porém após a conclusão da formação, busquei melhorar o projeto aplicando ajustes nos padrões de código e arquitetura.
 Implementei conhecimentos que aprendi durante minha trajetória profisional e em outros cursos da até esse projeto final.
 
+### Nota
+Este repositório contém arquivos e dados que, em um ambiente de produção, seriam considerados sensíveis. 
+Eles foram incluídos intencionalmente para fins didáticos e explicativos, de modo a ilustrar conceitos e práticas. 
+Recomenda-se não utilizar esses dados em um ambiente real sem as devidas precauções de segurança.
+
 ## Estrutura do Projeto
 
 - ScreenSound.API: Projeto API
