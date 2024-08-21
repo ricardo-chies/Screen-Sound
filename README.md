@@ -1,6 +1,10 @@
 # ScreenSound
 
 O ScreenSound é uma aplicação que gerencia informações sobre músicas e artistas, permitindo aos usuários explorar e avaliar conteúdos musicais.
+A base desse projeto foi realizada em algumas formações que realizei na Alura.
+
+Porém após a conclusão da formação, busquei melhorar o projeto aplicando ajustes nos padrões de código e arquitetura.
+Implementei conhecimentos que aprendi durante minha trajetória profisional e em outros cursos da até esse projeto final.
 
 ## Estrutura do Projeto
 
@@ -8,6 +12,9 @@ O ScreenSound é uma aplicação que gerencia informações sobre músicas e art
 - ScreenSound.Data: Projeto de acesso a dados
 - ScreenSound.Models: Projeto contendo as entidades do domínio
 - ScreenSound.Web: Projeto FrontEnd Blazor
+- ScreenSound.Tests: Projeto de Testes xUnit onde estão os testes unitários
+- ScreenSound.Tests.Integration: Projeto de Testes xUnit onde estão os testes de integração com o banco de dados MySql e com a API.
+- ScreenSound.Tests.Interface: Projeto de Testes xUnit onde estão os testes de interface, criados utilizando Selenium WebDriver.
 
 ## Funcionalidades
 
@@ -98,6 +105,52 @@ Ex: http://localhost:5036
 Caso tenha o Visual Studio instalado em seu computador, a maneira mais simples é abrir a solution do projeto e iniciar ambos os projetos configurando 'Vários projetos de inicialização' e selecionando ScreenSound.API e ScreenSound.Web
 
 Para consumir o projeto web primeiro é necessário criar um usuário pela API e realizar o login pelo projeto Web.
+
+## Testes
+
+### Testes Unitários
+Os testes unitários estão localizados no projeto ScreenSound.Tests. 
+Eles são responsáveis por validar a lógica de negócio das classes e métodos do projeto. 
+Para isso, utilizamos o framework xUnit, que oferece uma estrutura simples e poderosa para a criação e execução de testes automatizados.
+
+### Testes de Integração
+Os testes de integração estão no projeto ScreenSound.Tests.Integration. 
+Esses testes validam a integração entre os diferentes módulos da aplicação, como a interação com o banco de dados MySQL e as requisições à API.
+
+Para os testes de integração com o banco de dados MySQL, é utilizado o Testcontainers.MySql, que permite criar um container MySQL temporário, garantindo que os testes sejam executados em um ambiente controlado e isolado. 
+Além disso, há uma configuração específica para testes de integração com a API, utilizando o WebApplicationFactory para criar uma instância da aplicação e realizar as requisições HTTP necessárias.
+
+### Testes de Interface
+Os testes de interface estão no projeto ScreenSound.Tests.Interface e foram criados utilizando o Selenium WebDriver. 
+Esses testes automatizam a interação com a interface do usuário, verificando o comportamento e a funcionalidade do frontend da aplicação. 
+Eles são essenciais para garantir que o usuário final tenha uma experiência consistente e sem erros ao interagir com a aplicação.
+
+### Integração Contínua
+Para garantir a qualidade do código, os testes são integrados ao processo de CI/CD, sendo executados automaticamente a cada novo commit ou pull request. 
+Isso assegura que as alterações no código não introduzam regressões ou bugs.
+
+## Executando os Testes
+1. Clone o repositório e navegue até o diretório do projeto.
+
+2. Certifique-se de que o MySQL esteja configurado corretamente para os testes de integração.
+
+3. Execute os testes unitários com o comando:
+
+```
+dotnet test ScreenSound.Tests
+```
+
+4. Execute os testes de integração com o comando:
+
+```
+dotnet test ScreenSound.Tests.Integration
+```
+
+5. Execute os testes de interface com o comando:
+
+```
+dotnet test ScreenSound.Tests.Interface
+```
 
 ## Layout do Projeto
 <p align="center">
